@@ -5,8 +5,8 @@ cole.mitchell@okstate.edu
 Description: holds all the definitions for the 
 structures used in the program
 */
-#ifndef assignment02_Mitchell_Cole_structDefinitions
-#define assignment02_Mitchell_Cole_structDefinitions
+#ifndef assignment02_groupC_structDefinitions
+#define assignment02_groupC_structDefinitions
 //stores all the information for an employee
 //to start these will all be strings but we can change that as necesary
 struct employee{
