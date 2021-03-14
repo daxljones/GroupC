@@ -31,7 +31,7 @@ void findSatisfaction(struct employee *find)
     }
 
     int i = 0, pos = 0, linePos = 0;
-    char id[10];
+    char id[15];
     char line[200];
 
     while(fgets(line, 200, fp) != NULL)
@@ -39,6 +39,7 @@ void findSatisfaction(struct employee *find)
         pos = 0;
         linePos = 0;
 
+        memset(id, 0, 15);
         while(line[linePos] != '\t')
         {
             id[pos] = line[linePos];
@@ -48,7 +49,9 @@ void findSatisfaction(struct employee *find)
         linePos++;
         pos = 0;
 
-        if(atoi(id) != atoi(find->ID)){ continue; }
+        if(strcmp(id, find->ID)){ continue; }
+
+
 
         while(line[linePos] != '\t')
         {
@@ -107,8 +110,6 @@ void findSatisfaction(struct employee *find)
         break;
     }
 
-    
-
 }
 
 
@@ -124,7 +125,7 @@ void findSalary(struct employee *find)
     }
 
 
-    int pos = 0, linePos = 0;
+    int pos = 0, linePos = 0, i = 0;
     char id[15];
     char line[200];
 
@@ -133,6 +134,7 @@ void findSalary(struct employee *find)
         pos = 0;
         linePos = 0;
 
+        memset(id, 0, 15);
         while(line[linePos] != '\t')
         {
             id[pos] = line[linePos];
@@ -142,19 +144,16 @@ void findSalary(struct employee *find)
         linePos++;
         pos = 0;
 
-        if(atoi(id) != atoi(find->ID))
+        if(strcmp(id, find->ID))
         {
             continue;
         }
 
         while(line[linePos] != '\t')
         {
-            (find->JobTitle)[pos] = line[linePos];
-            pos++;
             linePos++;
         }
         linePos++;
-        pos = 0;
 
         while(line[linePos] != '\t')
         {
@@ -181,16 +180,6 @@ void findSalary(struct employee *find)
             linePos++;
         }
         linePos++;
-        pos = 0;
-
-        while(line[linePos] != '\t')
-        {
-            (find->Status)[pos] = line[linePos];
-            pos++;
-            linePos++;
-        }
-        linePos++;
-        pos = 0;
 
         break;
     }
@@ -198,6 +187,78 @@ void findSalary(struct employee *find)
 
 
 
+
+
+
+int checkDetails(struct employee *find)
+{
+    FILE *fp = fopen("Salaries.txt", "r"); //open file state.txt
+
+    if(fp == NULL) //Check to see if file successfully opened
+    {
+        printf("Error: File1 not found!");
+        exit(1);
+    }
+
+
+    int pos = 0, linePos = 0;
+    char id[15];
+    char line[200];
+    char jobCheck[100];
+    char statusCheck[10];
+
+    while(fgets(line, 200, fp) != NULL)
+    {
+        pos = 0;
+        linePos = 0;
+
+        memset(id, 0, 15);
+        while(line[linePos] != '\t')
+        {
+            id[pos] = line[linePos];
+            pos++;
+            linePos++;
+        }
+        linePos++;
+        pos = 0;
+
+        if(strcmp(id, find->ID))
+        {
+            continue;
+        }
+
+
+        memset(jobCheck, 0, 100);
+        while(line[linePos] != '\t')
+        {
+            jobCheck[pos] = line[linePos];
+            pos++;
+            linePos++;
+        }
+        linePos++;
+        pos = 0;
+
+        if(strcmp(find->JobTitle, jobCheck) != 0)
+        {
+            memset(jobCheck, 0, 100);
+            return 0; 
+        }
+
+        memset(statusCheck, 0, 10);
+        while(line[linePos + 2] != '\n')
+        {
+            linePos++;
+        }
+
+        if(line[linePos] != (find->Status)[0])
+        {
+            printf("This doesnt work");
+            return 0;
+        }
+    }
+
+    return 1;
+}
 
 
 
@@ -220,9 +281,10 @@ int main()
     struct employee curr;
     struct employee *current = &curr;
 
+    strcpy(current->JobTitle, "CAPTAIN, FIRE SUPPRESSION");
+    strcpy(current->Status, "PT");
 
-
-    int i = 0, pos = 0, linePos = 0;
+    int i = 0, pos = 0, linePos = 0, foundMatch = 0;
 
     while(fgets(line, 100, fp) != NULL)
     {
@@ -242,18 +304,18 @@ int main()
             linePos++;
         }
 
-        if(i == 24)
-        {
-            printf("name %s\n", current->EmployeeName);
-        }
-
 
         if(strcmp(current->EmployeeName, choice) == 0)
         {
-            printf("Found! ID: %s Name: %s\n", current->ID, current->EmployeeName);
-            findSatisfaction(current);
-            findSalary(current);
-            break;
+            //printf("Found! ID: %s Name: %s\n", current->ID, current->EmployeeName);
+            
+            if(checkDetails(current) != 0)
+            {
+                findSatisfaction(current);
+                findSalary(current);
+                foundMatch = 1;
+                break;
+            }
         }
 
         memset(current->EmployeeName, 0, 50);
@@ -261,19 +323,24 @@ int main()
         linePos = 0;
     }
 
-    printf("Found!\n");
-    printf("ID: %s\n", current->ID);
-    printf("Name: %s\n", current->EmployeeName);
-    printf("SL: %s\n", current->satisfaction_level);
-    printf("NP: %d\n", atoi(current->number_project));
-    printf("AVGH: %d\n", atoi(current->average_monthly_hours));
-    printf("TSCY: %s\n", current->time_spend_company_in_years);
-    printf("WA: %s\n", current->Work_accident);
-    printf("PLY: %s\n", current->promotion_last_5years);
-    printf("Job: %s\n", current->JobTitle);
-    printf("Base: %s\n", current->BasePay);
-    printf("OT: %s\n", current->OvertimePay);
-    printf("Bene: %s\n", current->Benefit);
-    printf("Status: %s\n", current->Status);
+    if(foundMatch)
+    {
+        printf("Found!\n");
+        printf("ID: %s\n", current->ID);
+        printf("Name: %s\n", current->EmployeeName);
+        printf("SL: %s\n", current->satisfaction_level);
+        printf("NP: %d\n", atoi(current->number_project));
+        printf("AVGH: %d\n", atoi(current->average_monthly_hours));
+        printf("TSCY: %s\n", current->time_spend_company_in_years);
+        printf("WA: %s\n", current->Work_accident);
+        printf("PLY: %s\n", current->promotion_last_5years);
+        printf("Job: %s\n", current->JobTitle);
+        printf("Base: %s\n", current->BasePay);
+        printf("OT: %s\n", current->OvertimePay);
+        printf("Bene: %s\n", current->Benefit);
+        printf("Status: %s\n", current->Status);
+    }
+    else
+        printf("No Match!\n");
 
 }
