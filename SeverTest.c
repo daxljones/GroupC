@@ -1,6 +1,7 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 
 struct employee{
     char ID[15];
@@ -20,7 +21,7 @@ struct employee{
 
 
 
-void findSatisfaction(struct employee *find)
+void * findSatisfaction(void *f)
 {
     FILE *fp = fopen("SatisfactionLevel.txt", "r"); //open file state.txt
 
@@ -29,6 +30,8 @@ void findSatisfaction(struct employee *find)
         printf("Error: File2 not found!");
         exit(1);
     }
+
+    struct employee *find = (struct employee *)f;
 
     int i = 0, pos = 0, linePos = 0;
     char id[15];
@@ -110,11 +113,12 @@ void findSatisfaction(struct employee *find)
         break;
     }
 
+    return NULL;
 }
 
 
 
-void findSalary(struct employee *find)
+void * findSalary(void *f)
 {
     FILE *fp = fopen("Salaries.txt", "r"); //open file state.txt
 
@@ -124,6 +128,7 @@ void findSalary(struct employee *find)
         exit(1);
     }
 
+    struct employee *find = (struct employee *)f;
 
     int pos = 0, linePos = 0, i = 0;
     char id[15];
@@ -183,6 +188,8 @@ void findSalary(struct employee *find)
 
         break;
     }
+
+    return NULL;
 }
 
 
@@ -262,6 +269,10 @@ int checkDetails(struct employee *find)
 
 
 
+
+
+
+
 int main()
 {
     FILE *fp = fopen("ID_Name.txt", "r"); //open file state.txt
@@ -283,6 +294,9 @@ int main()
 
     strcpy(current->JobTitle, "CAPTAIN, FIRE SUPPRESSION");
     strcpy(current->Status, "PT");
+
+    pthread_t salaryThread;
+    pthread_t satisfactionThread;
 
     int i = 0, pos = 0, linePos = 0, foundMatch = 0;
 
@@ -311,8 +325,10 @@ int main()
             
             if(checkDetails(current) != 0)
             {
-                findSatisfaction(current);
-                findSalary(current);
+                pthread_create(&salaryThread, NULL, findSalary, current);
+                pthread_create(&satisfactionThread, NULL, findSatisfaction, current);
+                pthread_join(salaryThread, NULL);
+                pthread_join(satisfactionThread, NULL);
                 foundMatch = 1;
                 break;
             }
