@@ -35,10 +35,6 @@ int main ()
 		printf("Please Enter the Employee's status: ");
 		scanf("%s", Emp2.status);
 
-		printf("Employee name is: %s \n", Emp2.name);
-		printf("Employee title is: %s \n", Emp2.title);
-		printf("Employee status is: %s \n", Emp2.status);
-
 		printf("Do you wish to enter another employee? Y/N: ");
 		scanf("%s", &ch);
 	}
