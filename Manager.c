@@ -1,20 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-struct Employee
-{
-	int ID;
-	char name[20];
-	char title[20];
-	double basePay;
-	double overtimePay;
-	char benfit[20];
-	char status[20];
-	int satisfactionLevel;
-	int numberProject;
-	int averageMonthlyHours;
-	int timeSpendCompanyInYears;
-	int workAccident;
-	int promationLast5Years;
+
+
+struct employee{
+    char ID[15];
+    char EmployeeName[50];
+    char JobTitle[100];
+    char BasePay[10];
+    char OvertimePay[10];
+    char Benefit[10];
+    char Status[10];
+    char satisfaction_level[10];
+    char number_project[10];
+    char average_monthly_hours[10];
+    char time_spend_company_in_years[10];
+    char Work_accident[10];
+    char promotion_last_5years[10];
 };
 
 int main ()
@@ -24,16 +25,16 @@ int main ()
 	{
 		system("clear");
 
-		struct Employee Emp2;
+		struct employee Emp2;
 
 		printf("Please enter the employee's name: ");
-		scanf("%s", Emp2.name);
+		scanf("%s", Emp2.EmployeeName);
 
 		printf("Please enter the Employee's job title: ");
-		scanf("%s", Emp2.title);
+		scanf("%s", Emp2.JobTitle);
 
 		printf("Please Enter the Employee's status: ");
-		scanf("%s", Emp2.status);
+		scanf("%s", Emp2.Status);
 
 		printf("Do you wish to enter another employee? Y/N: ");
 		scanf("%s", &ch);
