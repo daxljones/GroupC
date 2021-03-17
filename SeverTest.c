@@ -95,6 +95,7 @@ void * findSatisfaction(void *f)
         break;
     }
 
+    fclose(fp);
     return NULL;
 }
 
@@ -171,6 +172,8 @@ void * findSalary(void *f)
         break;
     }
 
+    fclose(fp);
+
     return NULL;
 }
 
@@ -230,6 +233,7 @@ int checkDetails(struct employee *find)
         if(strcmp(find->JobTitle, jobCheck) != 0)
         {
             memset(jobCheck, 0, 100);
+            fclose(fp);
             return 0; 
         }
 
@@ -241,10 +245,12 @@ int checkDetails(struct employee *find)
 
         if(line[linePos] != (find->Status)[0])
         {
-            printf("This doesnt work");
+            fclose(fp);
             return 0;
         }
     }
+
+    fclose(fp);
 
     return 1;
 }
