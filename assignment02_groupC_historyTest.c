@@ -19,7 +19,7 @@ int main(){
     //opens history file
     FILE *fptr, *temp;
     char fileName[] = "history";
-    fptr = fopen(fileName, "rb+");
+    fptr = fopen(fileName, "ab+");
 
     //checks if message is in the history file
     while(fread(search, sizeof(struct employee), 1, fptr)){
@@ -34,7 +34,7 @@ int main(){
         //make request to server and receive result 
 
         //rewrite history file
-        temp = fopen("temp", "rb+");
+        temp = fopen("temp", "ab+");
         for(int i = 0; i < 10; i++){
         if(rewrite % 10 == i){
             fwrite(result, sizeof(struct employee), 1, temp);
