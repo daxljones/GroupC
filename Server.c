@@ -1,3 +1,8 @@
+//Author: Dax Jones
+//Use: Searches through multiple text files to determine if the predermined
+//      employee is in the file, then gathers all related imformation pertaing to the employee
+
+
 #include "structs.h"
 #include "functions.h"
 
@@ -263,6 +268,8 @@ int checkDetails(struct employee *find)
 
 void server()
 {
+    printf("Server Demo running...\n\nLooking for 'JOSEPH DRISCOLL', 'CAPTAIN, FIRE SUPPRESSION', 'PT'...\n\n");
+    
     FILE *fp = fopen("ID_Name.txt", "r"); //open file state.txt
 
     if(fp == NULL) //Check to see if file successfully opened
