@@ -6,7 +6,7 @@ Authors:
     Kellen Riley
 
 To compile and run:
-    gcc -o startDemo groupCStart.c Server.c *add your guy's file names here*
+    gcc -o startDemo groupCStart.c Server.c Manager.c
     ./startDemo
 
 This program is currently in an unfinished state. Running it will demonstrate how the program
