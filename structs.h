@@ -19,7 +19,7 @@ struct employee{
 
 #ifndef structs
 #define structs
-typedef struct employee{
+struct employee{
     char ID[15];
     char EmployeeName[50];
     char JobTitle[100];
@@ -33,5 +33,5 @@ typedef struct employee{
     char time_spend_company_in_years[10];
     char Work_accident[10];
     char promotion_last_5years[10];
-} __attribute__((packed))employee;
+}__attribute__((packed))employee;
 #endif

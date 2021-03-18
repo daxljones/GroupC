@@ -29,7 +29,7 @@ int Manager ()
 {	
 	pid_t pida;
 	
-	employee* emp = malloc(sizeof(*emp));
+	struct employee* emp = malloc(sizeof(*emp));
 	int rv;
 	int commpipe[2]; //This holds the fd for the input & output of the pipe 
 	
@@ -69,11 +69,11 @@ int Manager ()
 					found = 1;
 					break;
 				}
-				printf("%s was not found in history file\n",emp->EmployeeName);
 			}
 
 			if(!found){
 				//make request to server and receive result
+				printf("%s was not found in history file\n",emp->EmployeeName);
 				printf("We would make a request to the server at this point but that functionality is not completed\n");
 				if(!found2){
 					printf("%s was not found\n",emp->EmployeeName);

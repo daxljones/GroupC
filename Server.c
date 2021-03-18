@@ -5,7 +5,7 @@
 
 #include "structs.h"
 #include "functions.h"
-
+#include <pthread.h>
 
 
 void * findSatisfaction(void *f)

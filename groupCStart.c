@@ -1,6 +1,7 @@
 #include "functions.h"
 #include "structs.h"
 #include "Manager.c"
+#include "Server.c"
 
 int main()
 {
