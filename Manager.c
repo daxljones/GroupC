@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/wait.h>
+#include "functions.h"
 #include "structs.h"
 
 /*
@@ -25,7 +20,7 @@ typedef struct employee{
 */
 
 
-int Manager ()
+void Manager ()
 {	
 	pid_t pida;
 	
@@ -116,6 +111,6 @@ int Manager ()
 			write(commpipe[1], emp, sizeof(*emp));
 		}while (ch == 'y' || ch == 'Y');
 
-		kill(pida, SIGKILL);
+		//kill(pida, SIGKILL);
 	}
 }
