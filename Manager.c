@@ -4,8 +4,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include "structs.h"
 
-
+/*
 typedef struct employee{
     char* ID;
     char EmployeeName[50];
@@ -21,7 +22,7 @@ typedef struct employee{
     char Work_accident[10];
     char promotion_last_5years[10];
 } __attribute__((packed))employee;
-
+*/
 
 
 int Manager ()
@@ -63,7 +64,7 @@ int Manager ()
 
 			//checks if message is in the history file
 			while(fread(search, sizeof(struct employee), 1, fptr)){
-				if(!strcmp(emp->EmployeeName,search->EmployeeName) && !strcmp(emp->Status,search->Status) && !strcmp(emp->JobTitle,search->JobTitle) {
+				if(!strcmp(emp->EmployeeName,search->EmployeeName) && !strcmp(emp->Status,search->Status) && !strcmp(emp->JobTitle,search->JobTitle)) {
 					result = search;
 					found = 1;
 					break;
