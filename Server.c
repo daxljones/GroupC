@@ -23,6 +23,12 @@ void * findSatisfaction(void *f)
     int i = 0, pos = 0, linePos = 0;
     char id[15];
     char line[200];
+    char satisfactionLevel[10];
+    char numOfProjects[10];
+    char avgMonthlyHours[10];
+    char timeWithCompany[10];
+    char workAccidents[10];
+    char promLastYear[10];
 
     while(fgets(line, 200, fp) != NULL)
     {
@@ -39,61 +45,67 @@ void * findSatisfaction(void *f)
         linePos++;
         pos = 0;
 
-        if(strcmp(id, find->ID)){ continue; }
+        if(find->ID != atoi(id)){ continue; }
 
 
 
         while(line[linePos] != '\t')
         {
-            (find->satisfaction_level)[pos] = line[linePos];
+            satisfactionLevel[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->satisfaction_level = atof(satisfactionLevel);
         linePos++;
         pos = 0;
 
         while(line[linePos] != '\t')
         {
-            (find->number_project)[pos] = line[linePos];
+            numOfProjects[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->number_project = atoi(numOfProjects);
         linePos++;
         pos = 0;
 
         while(line[linePos] != '\t')
         {
-            (find->average_monthly_hours)[pos] = line[linePos];
+            avgMonthlyHours[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->average_monthly_hours = atoi(avgMonthlyHours);
         linePos++;
         pos = 0;
 
         while(line[linePos] != '\t')
         {
-            (find->time_spend_company_in_years)[pos] = line[linePos];
+            timeWithCompany[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->time_spend_company_in_years = atoi(timeWithCompany);
         linePos++;
         pos = 0;
 
         while(line[linePos] != '\t')
         {
-            (find->Work_accident)[pos] = line[linePos];
+            workAccidents[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->Work_accident = atoi(workAccidents);
         linePos++;
         pos = 0;
 
         while(line[linePos] != '\n')
         {
-            (find->promotion_last_5years)[pos] = line[linePos];
+            promLastYear[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->promotion_last_5years = atoi(promLastYear);
         linePos++;
         pos = 0;
         
@@ -121,6 +133,9 @@ void * findSalary(void *f)
     int pos = 0, linePos = 0, i = 0;
     char id[15];
     char line[200];
+    char basePay[20];
+    char overtimePay[20];
+    char benefits[20];
 
     while(fgets(line, 200, fp) != NULL)
     {
@@ -137,7 +152,7 @@ void * findSalary(void *f)
         linePos++;
         pos = 0;
 
-        if(strcmp(id, find->ID))
+        if(find->ID != atoi(id))
         {
             continue;
         }
@@ -150,28 +165,31 @@ void * findSalary(void *f)
 
         while(line[linePos] != '\t')
         {
-            (find->BasePay)[pos] = line[linePos];
+            basePay[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->BasePay = atof(basePay);
         linePos++;
         pos = 0;
 
         while(line[linePos] != '\t')
         {
-            (find->OvertimePay)[pos] = line[linePos];
+            overtimePay[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->OvertimePay = atof(overtimePay);
         linePos++;
         pos = 0;
 
         while(line[linePos] != '\t')
         {
-            (find->Benefit)[pos] = line[linePos];
+            benefits[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        find->Benefit = atof(benefits);
         linePos++;
 
         break;
@@ -219,8 +237,9 @@ int checkDetails(struct employee *find)
         linePos++;
         pos = 0;
 
-        if(strcmp(id, find->ID))
+        if(find->ID != atoi(id))
         {
+            //printf("have: %d need: %d", atoi(id), find->ID);
             continue;
         }
 
@@ -299,10 +318,11 @@ void server()
     {
         while(line[linePos] != '\t')
         {
-            (current -> ID)[pos] = line[linePos];
+            id[pos] = line[linePos];
             pos++;
             linePos++;
         }
+        current->ID = atoi(id);
         pos = 0;
         linePos++;
 
@@ -337,18 +357,18 @@ void server()
     if(foundMatch)
     {
         printf("Found!\n");
-        printf("ID: %s\n", current->ID);
+        printf("ID: %d\n", current->ID);
         printf("Name: %s\n", current->EmployeeName);
-        printf("SL: %s\n", current->satisfaction_level);
-        printf("NP: %d\n", atoi(current->number_project));
-        printf("AVGH: %d\n", atoi(current->average_monthly_hours));
-        printf("TSCY: %s\n", current->time_spend_company_in_years);
-        printf("WA: %s\n", current->Work_accident);
-        printf("PLY: %s\n", current->promotion_last_5years);
+        printf("SL: %f\n", current->satisfaction_level);
+        printf("NP: %d\n", current->number_project);
+        printf("AVGH: %d\n", current->average_monthly_hours);
+        printf("TSCY: %d\n", current->time_spend_company_in_years);
+        printf("WA: %d\n", current->Work_accident);
+        printf("PLY: %d\n", current->promotion_last_5years);
         printf("Job: %s\n", current->JobTitle);
-        printf("Base: %s\n", current->BasePay);
-        printf("OT: %s\n", current->OvertimePay);
-        printf("Bene: %s\n", current->Benefit);
+        printf("Base: %f\n", current->BasePay);
+        printf("OT: %f\n", current->OvertimePay);
+        printf("Bene: %f\n", current->Benefit);
         printf("Status: %s\n", current->Status);
     }
     else

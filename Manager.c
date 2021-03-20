@@ -99,15 +99,19 @@ void Manager ()
 			//system("clear");
 			printf("Please enter the employee's name: ");
 			scanf("%s", emp -> EmployeeName);
+			fflush(stdin);
 
 			printf("Please enter the Employee's job title: ");
 			scanf("%s", emp -> JobTitle);
 
 			printf("Please Enter the Employee's status: ");
 			scanf("%s", emp -> Status);
+			fflush(stdin);
 		
 			printf("Do you wish to enter another employee? Y/N: ");
 			scanf("%s", &ch);
+			fflush(stdin);
+			
 			write(commpipe[1], emp, sizeof(*emp));
 		}while (ch == 'y' || ch == 'Y');
 
