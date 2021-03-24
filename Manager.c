@@ -137,7 +137,20 @@ void assistant(){
 				}
 				else
 				{
-					printf("Server: \t%d\t%s\n",e->ID, e->EmployeeName);
+					printf("Found! Now sending...\n");
+					printf("ID: %d\n", e->ID);
+					printf("Name: %s\n", e->EmployeeName);
+					printf("SL: %f\n", e->satisfaction_level);
+					printf("NP: %d\n", e->number_project);
+					printf("AVGH: %d\n", e->average_monthly_hours);
+					printf("TSCY: %d\n", e->time_spend_company_in_years);
+					printf("WA: %d\n", e->Work_accident);
+					printf("PLY: %d\n", e->promotion_last_5years);
+					printf("Job: %s\n", e->JobTitle);
+					printf("Base: %f\n", e->BasePay);
+					printf("OT: %f\n", e->OvertimePay);
+					printf("Bene: %f\n", e->Benefit);
+					printf("Status: %s\n", e->Status);
 				}
 
 			

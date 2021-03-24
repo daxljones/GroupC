@@ -370,7 +370,6 @@ void server()
 
         if(strcmp(current -> EmployeeName, "exit") == 0)
         {
-            printf("Problem 1");
             close(sockfd);
             close(newSocket);
             break;
@@ -410,7 +409,6 @@ void server()
                     pthread_join(salaryThread, NULL);
                     pthread_join(satisfactionThread, NULL);
                     foundMatch = 1;
-                    printf("Problem 2");
                     break;
                 }
             }
