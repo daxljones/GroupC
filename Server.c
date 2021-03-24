@@ -287,7 +287,7 @@ int checkDetails(struct employee *find)
 
 void server()
 {
-    printf("Server Demo running...\n\nLooking for 'JOSEPH DRISCOLL', 'CAPTAIN, FIRE SUPPRESSION', 'PT'...\n\n");
+    //printf("Server Demo running...\n\nLooking for 'JOSEPH DRISCOLL', 'CAPTAIN, FIRE SUPPRESSION', 'PT'...\n\n");
     
     FILE *fp = fopen("ID_Name.txt", "r"); //open file state.txt
 
@@ -297,81 +297,152 @@ void server()
         exit(1);
     }
 
+    int sockfd, ret;
+    struct sockaddr_in serverAddr;
+
+    int newSocket;
+    struct sockaddr_in newAddr;
+
+    socklen_t addr_size;
+
+
     char line[1000];
     char id[15];
-    char choice[] = "JOSEPH DRISCOLL";
     char name[50];
+
+    int i = 0, pos = 0, linePos = 0, foundMatch = 0;
 
 
     struct employee curr;
     struct employee *current = &curr;
 
-    strcpy(current->JobTitle, "CAPTAIN, FIRE SUPPRESSION");
-    strcpy(current->Status, "PT");
-
     pthread_t salaryThread;
     pthread_t satisfactionThread;
 
-    int i = 0, pos = 0, linePos = 0, foundMatch = 0;
+    sockfd =  socket(AF_INET, SOCK_STREAM, 0);
+    close(sockfd);
+    sockfd =  socket(AF_INET, SOCK_STREAM, 0);
 
-    while(fgets(line, 100, fp) != NULL)
+    if(sockfd < 0)
     {
-        while(line[linePos] != '\t')
-        {
-            id[pos] = line[linePos];
-            pos++;
-            linePos++;
-        }
-        current->ID = atoi(id);
-        pos = 0;
-        linePos++;
-
-        while(line[linePos] != '\n')
-        {
-            (current -> EmployeeName)[pos] = line[linePos];
-            pos++;
-            linePos++;
-        }
-
-
-        if(strcmp(current->EmployeeName, choice) == 0)
-        {
-            //printf("Found! ID: %s Name: %s\n", current->ID, current->EmployeeName);
-            
-            if(checkDetails(current) != 0)
-            {
-                pthread_create(&salaryThread, NULL, findSalary, current);
-                pthread_create(&satisfactionThread, NULL, findSatisfaction, current);
-                pthread_join(salaryThread, NULL);
-                pthread_join(satisfactionThread, NULL);
-                foundMatch = 1;
-                break;
-            }
-        }
-
-        memset(current->EmployeeName, 0, 50);
-        pos = 0;
-        linePos = 0;
+        printf("ERROR IN CONNECTION");
+        exit(1);
     }
+    printf("Server Socket is Created.\n");
 
-    if(foundMatch)
+    memset(&serverAddr, '\0', sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(PORT);
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+    ret = bind(sockfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
+    if(ret < 0)
     {
-        printf("Found!\n");
-        printf("ID: %d\n", current->ID);
-        printf("Name: %s\n", current->EmployeeName);
-        printf("SL: %f\n", current->satisfaction_level);
-        printf("NP: %d\n", current->number_project);
-        printf("AVGH: %d\n", current->average_monthly_hours);
-        printf("TSCY: %d\n", current->time_spend_company_in_years);
-        printf("WA: %d\n", current->Work_accident);
-        printf("PLY: %d\n", current->promotion_last_5years);
-        printf("Job: %s\n", current->JobTitle);
-        printf("Base: %f\n", current->BasePay);
-        printf("OT: %f\n", current->OvertimePay);
-        printf("Bene: %f\n", current->Benefit);
-        printf("Status: %s\n", current->Status);
+        printf("ERROR IN BINDING");
+        exit(1);
+    }
+    printf("Bind to port %d\n", 4444);
+
+    if(listen(sockfd, 10) == 0)
+    {
+        printf("Listening..\n");
     }
     else
-        printf("No Match!\n");
+        printf(("Error in binding2\n"));
 
+
+    newSocket = accept(sockfd, (struct sockaddr *)&newAddr, &addr_size);
+    if(newSocket < 0)
+        exit(1);
+    
+    printf("Connection Accepted from %s:%d\n\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port));
+
+    while(1)
+    {
+        i = 0;
+        pos = 0;
+        linePos = 0;
+        foundMatch = 0;
+
+        recv(newSocket, current, sizeof(struct employee), 0);
+
+        printf("Got Name: %s, Title: %s, Status: %s\n", current->EmployeeName, current->JobTitle, current->Status);
+
+        if(strcmp(current -> EmployeeName, "exit") == 0)
+        {
+            close(sockfd);
+            close(newSocket);
+            break;
+        }
+
+
+        while(fgets(line, 100, fp) != NULL)
+        {
+            while(line[linePos] != '\t')
+            {
+                id[pos] = line[linePos];
+                pos++;
+                linePos++;
+            }
+            current->ID = atoi(id);
+            pos = 0;
+            linePos++;
+
+            while(line[linePos] != '\n')
+            {
+                name[pos] = line[linePos];
+                pos++;
+                linePos++;
+            }
+
+            if(strcmp(current->EmployeeName, name) == 0)
+            {
+                
+                if(checkDetails(current) != 0)
+                {
+                    pthread_create(&salaryThread, NULL, findSalary, current);
+                    pthread_create(&satisfactionThread, NULL, findSatisfaction, current);
+                    pthread_join(salaryThread, NULL);
+                    pthread_join(satisfactionThread, NULL);
+                    foundMatch = 1;
+                    memset(name, 0, 50);
+                    pos = 0;
+                    linePos = 0;
+                    break;
+                }
+            }
+
+            memset(name, 0, 50);
+            pos = 0;
+            linePos = 0;
+        }
+
+        if(foundMatch)
+        {
+            printf("Found! Now sending...\n");
+            printf("ID: %d\n", current->ID);
+            printf("Name: %s\n", current->EmployeeName);
+            printf("SL: %f\n", current->satisfaction_level);
+            printf("NP: %d\n", current->number_project);
+            printf("AVGH: %d\n", current->average_monthly_hours);
+            printf("TSCY: %d\n", current->time_spend_company_in_years);
+            printf("WA: %d\n", current->Work_accident);
+            printf("PLY: %d\n", current->promotion_last_5years);
+            printf("Job: %s\n", current->JobTitle);
+            printf("Base: %f\n", current->BasePay);
+            printf("OT: %f\n", current->OvertimePay);
+            printf("Bene: %f\n", current->Benefit);
+            printf("Status: %s\n", current->Status);
+
+            send(newSocket, current, sizeof(struct employee), 0);
+        }
+        else
+        {
+            strcpy(current->EmployeeName, "No Match");
+            send(newSocket, current, sizeof(struct employee), 0);
+        }
+    }
+
+    printf("Server closing.. GoodBye!");
+    exit(0);
 }
