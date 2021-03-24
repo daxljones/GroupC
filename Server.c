@@ -366,7 +366,7 @@ void server()
 
         recv(newSocket, current, sizeof(struct employee), 0);
 
-        //printf("Got Name: %s, Title: %s, Status: %s\n", current->EmployeeName, current->JobTitle, current->Status);
+        printf("Got Name: %s, Title: %s, Status: %s\n", current->EmployeeName, current->JobTitle, current->Status);
 
         if(strcmp(current -> EmployeeName, "exit") == 0)
         {
@@ -395,10 +395,6 @@ void server()
                 linePos++;
             }
 
-            if(current->ID == 25)
-                printf("\n\nHave: %s\tNeed:%s\n\n", name, current->EmployeeName);
-
-
             if(strcmp(current->EmployeeName, name) == 0)
             {
                 
@@ -409,6 +405,9 @@ void server()
                     pthread_join(salaryThread, NULL);
                     pthread_join(satisfactionThread, NULL);
                     foundMatch = 1;
+                    memset(name, 0, 50);
+                    pos = 0;
+                    linePos = 0;
                     break;
                 }
             }
@@ -442,8 +441,6 @@ void server()
             strcpy(current->EmployeeName, "No Match");
             send(newSocket, current, sizeof(struct employee), 0);
         }
-
-        printf("End of loop\n");
     }
 
     printf("Server closing.. GoodBye!");
