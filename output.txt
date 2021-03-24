@@ -1,0 +1,9 @@
+I realize this is very simple but it seems to work.
+All we have to do is print what we want to be in the new terminal into
+this .txt file and the run 
+int exit_status = system("gnome-terminal -- tail -f output.txt");
+which will open the new terminal and print whatever is in the file to it. 
+
+The only downside is that I beleive this will open a new terminal every time 
+it's executed. 
+I couldn't find a way to have it just keep printing to the same terminal. 
