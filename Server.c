@@ -375,6 +375,14 @@ void server()
             break;
         }
 
+        FILE *fp = fopen("ID_Name.txt", "r"); //open file state.txt
+
+        if(fp == NULL) //Check to see if file successfully opened
+        {
+            printf("Error: File not found!");
+            exit(1);
+        }
+
 
         while(fgets(line, 100, fp) != NULL)
         {
@@ -385,6 +393,7 @@ void server()
                 linePos++;
             }
             current->ID = atoi(id);
+            printf("looking at id: %d", current->ID);
             pos = 0;
             linePos++;
 
@@ -441,6 +450,8 @@ void server()
             strcpy(current->EmployeeName, "No Match");
             send(newSocket, current, sizeof(struct employee), 0);
         }
+
+        fclose(fp);
     }
 
     printf("Server closing.. GoodBye!");
