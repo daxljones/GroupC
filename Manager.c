@@ -92,6 +92,7 @@ void assistant(int *commpipe){
 
 	FILE *fptr, *temp;
 	char fileName[] = "history";
+	int rewrite = 0;
 		
 
 	clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -126,12 +127,9 @@ void assistant(int *commpipe){
 
 		int found = 0;
 		int found2 = 0;
-		int rewrite = 0;
 
-		//opens history file
-	
+		//opens history file	
 		fptr = fopen(fileName, "ab+");
-
 		printf("Searching for %s with title %s and status %s\n",emp->EmployeeName,emp->JobTitle,emp->Status);
 
 		//checks if message is in the history file
@@ -145,6 +143,7 @@ void assistant(int *commpipe){
 				break;
 			}
 		}
+		fclose(fptr);
 		
 		//if not found in history file, asks server for information
 		if(!found){
@@ -187,7 +186,8 @@ void assistant(int *commpipe){
 				printf("%s was not found\n",emp->EmployeeName);
 			}else{
 				//rewrite history file
-				temp = fopen("temp", "ab+");
+				fptr = fopen(fileName, "ab+");
+				temp = fopen("temp", "wb");
 				for(int i = 0; i < 10; i++){
 					if(rewrite % 10 == i){
 						fwrite(emp, sizeof(struct employee), 1, temp);
