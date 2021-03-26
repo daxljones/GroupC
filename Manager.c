@@ -91,7 +91,7 @@ void assistant(int *commpipe){
 	struct employee employee;
 	struct employee *e = &employee;
 
-	FILE *fptr, *temp;
+	FILE *fptr, *temp, *fp;
 	char fileName[] = "history";
 	int rewrite = 0;
 		
@@ -104,6 +104,10 @@ void assistant(int *commpipe){
 		printf("ERROR IN CONNECTION");
 		exit(1);
 	}
+	//fp = fopen("Output.txt", "w+");
+	//fprintf(fp, "Socket Created!\n");
+	//system("gnome-terminal -- tail -f Output.txt");
+	//fclose(fp);
 	printf("Socket Created!\n");
 
 	memset(&serverAddr, '\0', sizeof(serverAddr));
@@ -116,7 +120,8 @@ void assistant(int *commpipe){
 
 	while(1){
 		//open output file type w+
-
+		
+		fp = fopen("Output.txt", "w+");
 
 		//receives message from manager and creates struct from message
 		read(commpipe[0], emp, sizeof(struct employee));
@@ -125,7 +130,7 @@ void assistant(int *commpipe){
 		{
 			send(clientSocket, emp, sizeof(struct employee), 0);
 			close(clientSocket);
-			printf("Assistant now leaving...");
+			fprintf(fp, "Assistant now leaving...");
 			exit(0);
 		}
 
@@ -134,15 +139,15 @@ void assistant(int *commpipe){
 
 		//opens history file	
 		fptr = fopen(fileName, "ab+");
-		printf("Searching for %s with title %s and status %s\n",emp->EmployeeName,emp->JobTitle,emp->Status);
+		fprintf(fp, "Searching for %s with title %s and status %s\n",emp->EmployeeName,emp->JobTitle,emp->Status);
 
 		//checks if message is in the history file
 		while(fread(search, sizeof(struct employee), 1, fptr)){
-			printf("Name for search: %s status: %s\n", search->EmployeeName, search->Status);
-			printf("===================================");
+			fprintf(fp, "Name for search: %s status: %s\n", search->EmployeeName, search->Status);
+			fprintf(fp, "===================================");
 			if(!strcmp(emp->EmployeeName,s.EmployeeName) && !strcmp(emp->Status,s.Status) && !strcmp(emp->JobTitle,s.JobTitle)) {
-				e = s;
-				printf("Employee found in history file\n");
+				employee = s;
+				fprintf(fp, "Employee found in history file\n");
 				found = 1;
 				break;
 			}
@@ -154,40 +159,40 @@ void assistant(int *commpipe){
 			//make request to server and receive result		
 			if(ret < 0)
 			{
-				printf("ERROR IN CONNECTION2");
+				fprintf(fp, "ERROR IN CONNECTION2");
 				exit(1);
 			}
-			printf("CONNECTED TO SERVER\n\n");
+			fprintf(fp, "CONNECTED TO SERVER\n\n");
 
 
-			printf("Sending EmployeeName:\t%s\n", e->EmployeeName);
+			fprintf(fp, "Sending EmployeeName:\t%s\n", e->EmployeeName);
 			send(clientSocket, emp, sizeof(struct employee), 0);
 
 			if(recv(clientSocket, emp, sizeof(struct employee), 0) < 0)
 			{
-				printf("ERROR recieving");
+				fprintf(fp, "ERROR recieving");
 			}
 			else
 			{
-				printf("Found! Now sending...\n");
-				printf("ID: %d\n", emp->ID);
-				printf("Name: %s\n", emp->EmployeeName);
-				printf("SL: %f\n", emp->satisfaction_level);
-				printf("NP: %d\n", emp->number_project);
-				printf("AVGH: %d\n", emp->average_monthly_hours);
-				printf("TSCY: %d\n", emp->time_spend_company_in_years);
-				printf("WA: %d\n", emp->Work_accident);
-				printf("PLY: %d\n", emp->promotion_last_5years);
-				printf("Job: %s\n", emp->JobTitle);
-				printf("Base: %f\n", emp->BasePay);
-				printf("OT: %f\n", emp->OvertimePay);
-				printf("Bene: %f\n", emp->Benefit);
-				printf("Status: %s\n", emp->Status);
+				fprintf(fp, "Found! Now sending...\n");
+				fprintf(fp, "ID: %d\n", emp->ID);
+				fprintf(fp, "Name: %s\n", emp->EmployeeName);
+				fprintf(fp, "SL: %f\n", emp->satisfaction_level);
+				fprintf(fp, "NP: %d\n", emp->number_project);
+				fprintf(fp, "AVGH: %d\n", emp->average_monthly_hours);
+				fprintf(fp, "TSCY: %d\n", emp->time_spend_company_in_years);
+				fprintf(fp, "WA: %d\n", emp->Work_accident);
+				fprintf(fp, "PLY: %d\n", emp->promotion_last_5years);
+				fprintf(fp, "Job: %s\n", emp->JobTitle);
+				fprintf(fp, "Base: %f\n", emp->BasePay);
+				fprintf(fp, "OT: %f\n", emp->OvertimePay);
+				fprintf(fp, "Bene: %f\n", emp->Benefit);
+				fprintf(fp, "Status: %s\n", emp->Status);
 				found2 = 1;
 			}
 
 			if(!found2){
-				printf("%s was not found\n",emp->EmployeeName);
+				fprintf(fp, "%s was not found\n",emp->EmployeeName);
 			}else{
 				//rewrite history file
 				fptr = fopen(fileName, "ab+");
@@ -208,8 +213,9 @@ void assistant(int *commpipe){
 		}
 		fclose(fptr); 	
 		//call command to print output file 
-
+		system("gnome-terminal -- tail -f output.txt");
 		//fclose(output);
+		fclose(fp);
 	}
 
 	//fflush(stdout);
