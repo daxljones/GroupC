@@ -82,7 +82,8 @@ void assistant(int *commpipe){
 	struct employee* emp = malloc(sizeof(*emp));
 	int rv;
 	//int commpipe[2]; //This holds the fd for the input & output of the pipe 
-	struct employee *search;
+	struct employee s;
+    struct employee *search = &s;
 
 	//sets up socket connection
 	int clientSocket, ret;
@@ -114,6 +115,9 @@ void assistant(int *commpipe){
 
 
 	while(1){
+		//open output file type w+
+
+
 		//receives message from manager and creates struct from message
 		read(commpipe[0], emp, sizeof(struct employee));
 
@@ -136,8 +140,8 @@ void assistant(int *commpipe){
 		while(fread(search, sizeof(struct employee), 1, fptr)){
 			printf("Name for search: %s status: %s\n", search->EmployeeName, search->Status);
 			printf("===================================");
-			if(!strcmp(emp->EmployeeName,search->EmployeeName) && !strcmp(emp->Status,search->Status) && !strcmp(emp->JobTitle,search->JobTitle)) {
-				emp = search;
+			if(!strcmp(emp->EmployeeName,s.EmployeeName) && !strcmp(emp->Status,s.Status) && !strcmp(emp->JobTitle,s.JobTitle)) {
+				e = s;
 				printf("Employee found in history file\n");
 				found = 1;
 				break;
@@ -202,8 +206,10 @@ void assistant(int *commpipe){
 				}
 			}			
 		}
-		fclose(fptr); 
-		
+		fclose(fptr); 	
+		//call command to print output file 
+
+		//fclose(output);
 	}
 
 	//fflush(stdout);

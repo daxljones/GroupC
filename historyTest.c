@@ -32,6 +32,14 @@ int main(){
     printf("Name for search: %s status: %s\n", s.EmployeeName, s.Status);
     fclose(fptr);
 
+    if(!strcmp(emp->EmployeeName,s.EmployeeName) && !strcmp(emp->Status,s.Status) && !strcmp(emp->JobTitle,s.JobTitle)){
+        printf("shit worked\n");
+        s.BasePay = 45;
+        e = s;
+        printf("%f \n",s.BasePay);
+        printf("%f \n",e.BasePay);
+    }
+
 	// //checks if message is in the history file
 	// while(fread(search, sizeof(struct employee), 1, fptr)){
 	// 	printf("Name for search: %s status: %s\n", search->EmployeeName, search->Status);
