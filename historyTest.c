@@ -40,6 +40,34 @@ int main(){
         printf("%f \n",e.BasePay);
     }
 
+
+    //rewrite history file
+	fptr = fopen(fileName, "ab+");
+	temp = fopen("temp", "wb");
+	for(int i = 0; i < 10; i++){
+		if(rewrite % 10 == i){
+			fwrite(emp, sizeof(struct employee), 1, temp);
+		}
+		else{
+			fread(search, sizeof(struct employee), 1, fptr);
+			fwrite(search, sizeof(struct employee), 1, temp);
+		}
+    }
+    fclose(temp);
+    fclose(fptr);
+    remove("./history");
+	rename("./temp",fileName);
+	
+
+    fptr = fopen(fileName, "ab+");
+    fread(search, sizeof(struct employee), 1, fptr);
+    printf("Name for search: %s status: %s\n", s.EmployeeName, s.Status);
+    fclose(fptr);
+
+    if(!strcmp(emp->EmployeeName,s.EmployeeName) && !strcmp(emp->Status,s.Status) && !strcmp(emp->JobTitle,s.JobTitle)){
+        printf("shit worked again\n");
+    }
+
 	// //checks if message is in the history file
 	// while(fread(search, sizeof(struct employee), 1, fptr)){
 	// 	printf("Name for search: %s status: %s\n", search->EmployeeName, search->Status);

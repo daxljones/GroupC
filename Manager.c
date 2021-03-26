@@ -205,10 +205,11 @@ void assistant(int *commpipe){
 						fread(search, sizeof(struct employee), 1, fptr);
 						fwrite(search, sizeof(struct employee), 1, temp);
 					}
-					remove(fileName);
-					rename("temp",fileName);
-					fclose(temp);
-				}
+    			}
+    			fclose(temp);
+    			fclose(fptr);
+    			remove("./history");
+				rename("./temp",fileName);
 			}			
 		}
 		fclose(fptr); 	
