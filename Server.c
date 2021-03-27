@@ -312,13 +312,6 @@ int checkDetails(struct employee *find)
 
 void server()
 {
-
-    if(fp == NULL) //Check to see if file successfully opened
-    {
-        printf("Error: File not found!");
-        exit(1);
-    }
-
     int sockfd, ret; //int for server connections
     struct sockaddr_in serverAddr; //struct for socket information
 
@@ -352,10 +345,21 @@ void server()
     }
     printf("Server Socket is Created.\n");
 
+    char ip[20]; //string for IP
+    int i = 0;
+    printf("Please enter the desired IP to create socket for: \n");
+    fgets(ip, sizeof(ip), stdin); //Get IP
+
+    while(ip[i] != '\n') //find location of '\n' that's tacked on to fgets input
+    {
+        i++;
+    }
+    ip[i] = ip[i + 1]; // replace '\n' with null terminator
+
     memset(&serverAddr, '\0', sizeof(serverAddr)); //Fill socket info struct with required info
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(PORT);
-    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    serverAddr.sin_addr.s_addr = inet_addr(ip);
 
     ret = bind(sockfd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)); //bind socket for connections
     if(ret < 0)
