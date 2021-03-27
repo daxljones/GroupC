@@ -1,8 +1,9 @@
 #include "functions.h"
 #include "structs.h"
 
+
+//Kick off the server
 int main()
 {
-    //printf("runs a manager/assistant test. User can input information to be searched for\ncurrently no results will be found but this demonstrates communication between manager and assistant\n\n");
-    server();
+    server(); //call main server method
 }
