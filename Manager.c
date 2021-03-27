@@ -32,45 +32,55 @@ void Manager ()
 		
 	}
 
-	
-	
-	char ch;
+
+	int i = 0;
 		
-	// do{
-	// 	//system("clear");
-	// 	printf("Please enter the employee's name: ");
-	// 	scanf("%s", emp -> EmployeeName);
-	// 	fflush(stdin);
+	while(1)
+	{
+		system("clear");
+		printf("Please enter the employee's name (enter 'exit' to leave): \n");
+		fgets(emp->EmployeeName, sizeof(emp->EmployeeName), stdin);
 
-	// 	printf("Please enter the Employee's job title: ");
-	// 	scanf("%s", emp -> JobTitle);
+		while(emp->EmployeeName[i] != '\n')
+		{
+			i++;
+		}
 
-	// 	printf("Please Enter the Employee's status: ");
-	// 	scanf("%s", emp -> Status);
-	// 	fflush(stdin);
-	
-	// 	printf("Do you wish to enter another employee? Y/N: ");
-	// 	scanf("%s", &ch);
-	// 	fflush(stdin);
+		emp->EmployeeName[i] = emp->EmployeeName[i + 1];
+		i = 0;
+
+
+		if(strcmp(emp->EmployeeName, "exit") == 0)
+		{
+			write(commpipe[1], emp, sizeof(*emp));
+			break;
+		}
+
+
+		printf("Please enter the Employee's job title: \n");
+		fgets(emp->JobTitle, sizeof(emp->JobTitle), stdin);
+
+		while(emp->JobTitle[i] != '\n')
+		{
+			i++;
+		}
+		emp->JobTitle[i] = emp->JobTitle[i + 1];
+		i = 0;
+
+		printf("Please Enter the Employee's status: \n");
+		fgets(emp->Status, sizeof(emp->Status), stdin);
+
+		while(emp->Status[i] != '\n')
+		{
+			i++;
+		}
+		emp->Status[i] = emp->Status[i + 1];
+		i = 0;
+
 		
-	// 	write(commpipe[1], emp, sizeof(*emp));
-	// }while (ch == 'y' || ch == 'Y');
+		write(commpipe[1], emp, sizeof(*emp));
+	}
 
-	//kill(pida, SIGKILL);
-
-
-	strcpy(emp->EmployeeName, "JOSEPH DRISCOLL");
-	strcpy(emp->JobTitle, "CAPTAIN, FIRE SUPPRESSION");
-	strcpy(emp->Status, "PT");
-
-	printf("SENDING NAME: %s\n", emp->EmployeeName);
-
-	write(commpipe[1], emp, sizeof(struct employee));
-	write(commpipe[1], emp, sizeof(struct employee));
-
-	strcpy(emp->EmployeeName, "exit");
-
-	write(commpipe[1], emp, sizeof(struct employee));
 
 	wait(NULL);
 }

@@ -393,7 +393,7 @@ void server()
                 linePos++;
             }
             current->ID = atoi(id);
-            printf("looking at id: %d", current->ID);
+            //printf("looking at id: %d", current->ID);
             pos = 0;
             linePos++;
 
