@@ -119,10 +119,6 @@ void assistant(int *commpipe){
 
 
 	while(1){
-		//open output file type w+
-		
-		fp = fopen("Output.txt", "w+");
-
 		//receives message from manager and creates struct from message
 		read(commpipe[0], emp, sizeof(struct employee));
 
@@ -130,9 +126,14 @@ void assistant(int *commpipe){
 		{
 			send(clientSocket, emp, sizeof(struct employee), 0);
 			close(clientSocket);
-			fprintf(fp, "Assistant now leaving...");
+			//fprintf(fp, "Assistant now leaving...");
 			exit(0);
 		}
+		
+		//open output file type w+
+		//char outputName[30];
+    	//snprintf(outputName,(int)sizeof(outputName),"output%d",rewrite);
+		fp = fopen("output", "w+");
 
 		int found = 0;
 		int found2 = 0;
@@ -144,10 +145,22 @@ void assistant(int *commpipe){
 		//checks if message is in the history file
 		while(fread(search, sizeof(struct employee), 1, fptr)){
 			fprintf(fp, "Name for search: %s status: %s\n", search->EmployeeName, search->Status);
-			fprintf(fp, "===================================");
 			if(!strcmp(emp->EmployeeName,s.EmployeeName) && !strcmp(emp->Status,s.Status) && !strcmp(emp->JobTitle,s.JobTitle)) {
-				employee = s;
+				//employee = s;
 				fprintf(fp, "Employee found in history file\n");
+				fprintf(fp, "ID: %d\n", s.ID);
+				fprintf(fp, "Name: %s\n", s.EmployeeName);
+				fprintf(fp, "SL: %f\n", s.satisfaction_level);
+				fprintf(fp, "NP: %d\n", s.number_project);
+				fprintf(fp, "AVGH: %d\n", s.average_monthly_hours);
+				fprintf(fp, "TSCY: %d\n", s.time_spend_company_in_years);
+				fprintf(fp, "WA: %d\n", s.Work_accident);
+				fprintf(fp, "PLY: %d\n", s.promotion_last_5years);
+				fprintf(fp, "Job: %s\n", s.JobTitle);
+				fprintf(fp, "Base: %f\n", s.BasePay);
+				fprintf(fp, "OT: %f\n", s.OvertimePay);
+				fprintf(fp, "Bene: %f\n", s.Benefit);
+				fprintf(fp, "Status: %s\n", s.Status);
 				found = 1;
 				break;
 			}
@@ -206,17 +219,24 @@ void assistant(int *commpipe){
 						fwrite(search, sizeof(struct employee), 1, temp);
 					}
     			}
+				rewrite++;
     			fclose(temp);
     			fclose(fptr);
     			remove("./history");
 				rename("./temp",fileName);
 			}			
-		}
-		fclose(fptr); 	
+		}	
 		//call command to print output file 
-		system("gnome-terminal -- tail -f output.txt");
-		//fclose(output);
 		fclose(fp);
+		system("gnome-terminal -- tail -f output.txt");		
+		remove("./output");
+
+		// fp = fopen("output", "r");
+		// char line[100];
+		// while(fread(line, sizeof(line), 1, fp)){
+		// 	printf("%s\n",line);
+		// }
+		// fclose(fp);
 	}
 
 	//fflush(stdout);
