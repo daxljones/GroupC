@@ -9,12 +9,14 @@ void Manager ()
 {	
 	pid_t pida;
 	
+	// the employee struct we send through the pipe
 	struct employee e;
 	struct employee *emp = &e;
 	int rv;
 	int commpipe[2]; //This holds the fd for the input & output of the pipe 
 	
-	char ip[20]; //string for IP
+	//string for IP, used to create the socket connection to server
+	char ip[20]; 
     int j = 0;
     printf("Please enter the desired IP to create socket for: \n");
     fgets(ip, sizeof(ip), stdin); //Get IP
@@ -26,27 +28,25 @@ void Manager ()
     ip[j] = ip[j + 1]; // replace '\n' with null terminator
 
 
+	//opens a pipe
 	if(pipe(commpipe)){
 		fprintf(stderr, "Pipe error");
 		exit(1);
 	}	
-	
-	pida = fork();
-	
+
+	//forks to create seperate assistant and manager	
+	pida = fork();	
 	if(pida == -1){
 		fprintf(stderr, "Fork error 1. Exiting.");
 		exit(1);
 	}
 	
-	if(pida == 0){ //assistant
-		
-		assistant(commpipe, ip);
-		
+	if(pida == 0){ //assistant		
+		assistant(commpipe, ip);		
 	}
 
-
 	int i = 0;
-		
+	//loop that allows the user to input employees to be searched 		
 	while(1)
 	{
 		system("clear");
@@ -89,23 +89,19 @@ void Manager ()
 		emp->Status[i] = emp->Status[i + 1];
 		i = 0;
 
-		
+		//sends search information to assistant
 		write(commpipe[1], emp, sizeof(*emp));
 	}
 
-
+	//waits for assistant to exit
 	wait(NULL);
 }
 
 
 void assistant(int *commpipe, char *ip){
-	
-
-
 	//sets up pipe to read
 	struct employee* emp = malloc(sizeof(*emp));
 	int rv;
-	//int commpipe[2]; //This holds the fd for the input & output of the pipe 
 	struct employee s;
     struct employee *search = &s;
 
@@ -115,11 +111,12 @@ void assistant(int *commpipe, char *ip){
 	struct employee employee;
 	struct employee *e = &employee;
 
+	//files for history and output
 	FILE *fptr, *temp, *fp;
 	char fileName[] = "history";
 	int rewrite = 0;
 		
-
+	//creates socket connection
 	clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 	close(clientSocket);
 	clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -128,10 +125,6 @@ void assistant(int *commpipe, char *ip){
 		printf("ERROR IN CONNECTION");
 		exit(1);
 	}
-	// fp = fopen("Output.txt", "w+");
-	// fprintf(fp, "Socket Created!\n");
-	// system("gnome-terminal -- tail -f Output.txt");
-	// fclose(fp);
 	printf("Socket Created!\n");
 
 	memset(&serverAddr, '\0', sizeof(serverAddr));
@@ -141,36 +134,31 @@ void assistant(int *commpipe, char *ip){
 
 	ret = connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
 
-
+	//loop to process messages from manager
 	while(1){
 		//receives message from manager and creates struct from message
 		read(commpipe[0], emp, sizeof(struct employee));
 
+		//exits assistant if manager sends an exit signal
 		if(strcmp(emp->EmployeeName, "exit") == 0)
 		{
 			send(clientSocket, emp, sizeof(struct employee), 0);
 			close(clientSocket);
-			//fprintf(fp, "Assistant now leaving...");
 			exit(0);
 		}
-		
-		//open output file type w+
-		//char outputName[30];
-    	//snprintf(outputName,(int)sizeof(outputName),"output%d",rewrite);
+
 		fp = fopen("Output.txt", "w+");
 
 		int found = 0;
-		int found2 = 0;
+		int found2;
 
 		//opens history file	
 		fptr = fopen(fileName, "ab+");
 		fprintf(fp, "Searching for %s with title %s and status %s\n",emp->EmployeeName,emp->JobTitle,emp->Status);
 
-		//checks if message is in the history file
+		//checks if data requested is in the history file
 		while(fread(search, sizeof(struct employee), 1, fptr)){
-			//fprintf(fp, "Name for search: %s status: %s\n", search->EmployeeName, search->Status);
 			if(!strcmp(emp->EmployeeName,s.EmployeeName) && !strcmp(emp->Status,s.Status) && !strcmp(emp->JobTitle,s.JobTitle)) {
-				//employee = s;
 				fprintf(fp, "Employee found in history file\n");
 				fprintf(fp, "ID: %d\n", s.ID);
 				fprintf(fp, "Name: %s\n", s.EmployeeName);
@@ -193,7 +181,7 @@ void assistant(int *commpipe, char *ip){
 		
 		//if not found in history file, asks server for information
 		if(!found){
-			//make request to server and receive result		
+			//checks connection to server	
 			if(ret < 0)
 			{
 				fprintf(fp, "ERROR IN CONNECTION2");
@@ -201,7 +189,7 @@ void assistant(int *commpipe, char *ip){
 			}
 			fprintf(fp, "CONNECTED TO SERVER\n\n");
 
-
+			//receives information back from server
 			fprintf(fp, "Sending EmployeeName:\t%s\n", emp->EmployeeName);
 			send(clientSocket, emp, sizeof(struct employee), 0);
 
@@ -211,23 +199,29 @@ void assistant(int *commpipe, char *ip){
 			}
 			else
 			{
-				fprintf(fp, "Found! Now sending...\n");
-				fprintf(fp, "ID: %d\n", emp->ID);
-				fprintf(fp, "Name: %s\n", emp->EmployeeName);
-				fprintf(fp, "SL: %.2f\n", emp->satisfaction_level);
-				fprintf(fp, "NP: %d\n", emp->number_project);
-				fprintf(fp, "AVGH: %d\n", emp->average_monthly_hours);
-				fprintf(fp, "TSCY: %d\n", emp->time_spend_company_in_years);
-				fprintf(fp, "WA: %d\n", emp->Work_accident);
-				fprintf(fp, "PLY: %d\n", emp->promotion_last_5years);
-				fprintf(fp, "Job: %s\n", emp->JobTitle);
-				fprintf(fp, "Base: %.2f\n", emp->BasePay);
-				fprintf(fp, "OT: %.2f\n", emp->OvertimePay);
-				fprintf(fp, "Bene: %.2f\n", emp->Benefit);
-				fprintf(fp, "Status: %s\n", emp->Status);
-				found2 = 1;
+				if(!(strcmp(emp->EmployeeName,"No Match"))){
+					found2 = 0;
+				}
+				else{
+					fprintf(fp, "Found! Now sending...\n");
+					fprintf(fp, "ID: %d\n", emp->ID);
+					fprintf(fp, "Name: %s\n", emp->EmployeeName);
+					fprintf(fp, "SL: %.2f\n", emp->satisfaction_level);
+					fprintf(fp, "NP: %d\n", emp->number_project);
+					fprintf(fp, "AVGH: %d\n", emp->average_monthly_hours);
+					fprintf(fp, "TSCY: %d\n", emp->time_spend_company_in_years);
+					fprintf(fp, "WA: %d\n", emp->Work_accident);
+					fprintf(fp, "PLY: %d\n", emp->promotion_last_5years);
+					fprintf(fp, "Job: %s\n", emp->JobTitle);
+					fprintf(fp, "Base: %.2f\n", emp->BasePay);
+					fprintf(fp, "OT: %.2f\n", emp->OvertimePay);
+					fprintf(fp, "Bene: %.2f\n", emp->Benefit);
+					fprintf(fp, "Status: %s\n", emp->Status);
+					found2 = 1;
+				}				
 			}
 
+			//if the information was found in the server, update history file
 			if(!found2){
 				fprintf(fp, "%s was not found\n",emp->EmployeeName);
 			}else{
@@ -254,16 +248,7 @@ void assistant(int *commpipe, char *ip){
 		fclose(fp);
 		system("gnome-terminal -- tail -f Output.txt -n 20");		
 		remove("./Output.txt");
-
-		// fp = fopen("output", "r");
-		// char line[100];
-		// while(fread(line, sizeof(line), 1, fp)){
-		// 	printf("%s\n",line);
-		// }
-		// fclose(fp);
 	}
-
-	//fflush(stdout);
 	close(clientSocket);
 	exit(0);
 }
