@@ -2,7 +2,7 @@
 #include "structs.h"
 
 
-void assistant(int *);
+void assistant(int *, char *);
 
 
 void Manager ()
@@ -14,6 +14,18 @@ void Manager ()
 	int rv;
 	int commpipe[2]; //This holds the fd for the input & output of the pipe 
 	
+	char ip[20]; //string for IP
+    int j = 0;
+    printf("Please enter the desired IP to create socket for: \n");
+    fgets(ip, sizeof(ip), stdin); //Get IP
+
+    while(ip[j] != '\n') //find location of '\n' that's tacked on to fgets input
+    {
+        j++;
+    }
+    ip[j] = ip[j + 1]; // replace '\n' with null terminator
+
+
 	if(pipe(commpipe)){
 		fprintf(stderr, "Pipe error");
 		exit(1);
@@ -28,7 +40,7 @@ void Manager ()
 	
 	if(pida == 0){ //assistant
 		
-		assistant(commpipe);
+		assistant(commpipe, ip);
 		
 	}
 
@@ -86,8 +98,10 @@ void Manager ()
 }
 
 
-void assistant(int *commpipe){
+void assistant(int *commpipe, char *ip){
 	
+
+
 	//sets up pipe to read
 	struct employee* emp = malloc(sizeof(*emp));
 	int rv;
@@ -123,7 +137,7 @@ void assistant(int *commpipe){
 	memset(&serverAddr, '\0', sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(PORT);
-	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serverAddr.sin_addr.s_addr = inet_addr(ip);
 
 	ret = connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
 
@@ -160,16 +174,16 @@ void assistant(int *commpipe){
 				fprintf(fp, "Employee found in history file\n");
 				fprintf(fp, "ID: %d\n", s.ID);
 				fprintf(fp, "Name: %s\n", s.EmployeeName);
-				fprintf(fp, "SL: %f\n", s.satisfaction_level);
+				fprintf(fp, "SL: %.2f\n", s.satisfaction_level);
 				fprintf(fp, "NP: %d\n", s.number_project);
 				fprintf(fp, "AVGH: %d\n", s.average_monthly_hours);
 				fprintf(fp, "TSCY: %d\n", s.time_spend_company_in_years);
 				fprintf(fp, "WA: %d\n", s.Work_accident);
 				fprintf(fp, "PLY: %d\n", s.promotion_last_5years);
 				fprintf(fp, "Job: %s\n", s.JobTitle);
-				fprintf(fp, "Base: %f\n", s.BasePay);
-				fprintf(fp, "OT: %f\n", s.OvertimePay);
-				fprintf(fp, "Bene: %f\n", s.Benefit);
+				fprintf(fp, "Base: %.2f\n", s.BasePay);
+				fprintf(fp, "OT: %.2f\n", s.OvertimePay);
+				fprintf(fp, "Bene: %.2f\n", s.Benefit);
 				fprintf(fp, "Status: %s\n", s.Status);
 				found = 1;
 				break;
@@ -188,7 +202,7 @@ void assistant(int *commpipe){
 			fprintf(fp, "CONNECTED TO SERVER\n\n");
 
 
-			fprintf(fp, "Sending EmployeeName:\t%s\n", e->EmployeeName);
+			fprintf(fp, "Sending EmployeeName:\t%s\n", emp->EmployeeName);
 			send(clientSocket, emp, sizeof(struct employee), 0);
 
 			if(recv(clientSocket, emp, sizeof(struct employee), 0) < 0)
@@ -200,16 +214,16 @@ void assistant(int *commpipe){
 				fprintf(fp, "Found! Now sending...\n");
 				fprintf(fp, "ID: %d\n", emp->ID);
 				fprintf(fp, "Name: %s\n", emp->EmployeeName);
-				fprintf(fp, "SL: %f\n", emp->satisfaction_level);
+				fprintf(fp, "SL: %.2f\n", emp->satisfaction_level);
 				fprintf(fp, "NP: %d\n", emp->number_project);
 				fprintf(fp, "AVGH: %d\n", emp->average_monthly_hours);
 				fprintf(fp, "TSCY: %d\n", emp->time_spend_company_in_years);
 				fprintf(fp, "WA: %d\n", emp->Work_accident);
 				fprintf(fp, "PLY: %d\n", emp->promotion_last_5years);
 				fprintf(fp, "Job: %s\n", emp->JobTitle);
-				fprintf(fp, "Base: %f\n", emp->BasePay);
-				fprintf(fp, "OT: %f\n", emp->OvertimePay);
-				fprintf(fp, "Bene: %f\n", emp->Benefit);
+				fprintf(fp, "Base: %.2f\n", emp->BasePay);
+				fprintf(fp, "OT: %.2f\n", emp->OvertimePay);
+				fprintf(fp, "Bene: %.2f\n", emp->Benefit);
 				fprintf(fp, "Status: %s\n", emp->Status);
 				found2 = 1;
 			}
