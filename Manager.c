@@ -150,7 +150,7 @@ void assistant(int *commpipe, char *ip){
 		fp = fopen("Output.txt", "w+");
 
 		int found = 0;
-		int found2;
+		int found2 = 0;
 
 		//opens history file	
 		fptr = fopen(fileName, "ab+");
@@ -222,12 +222,12 @@ void assistant(int *commpipe, char *ip){
 			}
 
 			//if the information was found in the server, update history file
-			if(!found2){
+			if(!found2 && !found){
 				fprintf(fp, "%s was not found\n",emp->EmployeeName);
 			}else{
 				//rewrite history file
-				fptr = fopen(fileName, "ab+");
-				temp = fopen("temp", "wb");
+				fptr = fopen(fileName, "rb");
+				temp = fopen("temp", "wb+");
 				for(int i = 0; i < 10; i++){
 					if(rewrite % 10 == i){
 						fwrite(emp, sizeof(struct employee), 1, temp);
