@@ -65,8 +65,9 @@ void * findSatisfaction(void *f)
         }
         find->satisfaction_level = atof(satisfactionLevel); //set employee package satisfaction level to gathered array
         linePos++;
-        pos = 0;
+        pos = 1;
 
+        numOfProjects[0] = '0';
         while(line[linePos] != '\t') // gather number of projects
         {
             numOfProjects[pos] = line[linePos];
@@ -75,8 +76,9 @@ void * findSatisfaction(void *f)
         }
         find->number_project = atoi(numOfProjects); //set employee package num of projects to gathered array
         linePos++;
-        pos = 0;
+        pos = 1;
 
+        avgMonthlyHours[0] = '0';
         while(line[linePos] != '\t') //gather avg monthly hours
         {
             avgMonthlyHours[pos] = line[linePos];
@@ -85,8 +87,9 @@ void * findSatisfaction(void *f)
         }
         find->average_monthly_hours = atoi(avgMonthlyHours); //set employee package avg monthly hours to gathered array
         linePos++;
-        pos = 0;
+        pos = 1;
 
+        timeWithCompany[0] = '0';
         while(line[linePos] != '\t') //gather time with company
         {
             timeWithCompany[pos] = line[linePos];
@@ -95,8 +98,9 @@ void * findSatisfaction(void *f)
         }
         find->time_spend_company_in_years = atoi(timeWithCompany); //set employee package time spent with company to gathered array
         linePos++;
-        pos = 0;
+        pos = 1;
 
+        workAccidents[0] = '0';
         while(line[linePos] != '\t') //gather work accidents
         {
             workAccidents[pos] = line[linePos];
@@ -105,8 +109,9 @@ void * findSatisfaction(void *f)
         }
         find->Work_accident = atoi(workAccidents); //set employee package work accidents to gathered array
         linePos++;
-        pos = 0;
+        pos = 1;
 
+        promLastYear[0] = '0';
         while(line[linePos] != '\n') //gather promotions
         {
             promLastYear[pos] = line[linePos];
@@ -452,6 +457,19 @@ void server()
 
         if(foundMatch) //check if the match was found
         {
+            printf("ID: %d\n", current->ID);
+            printf("Name: %s\n", current->EmployeeName);
+            printf("SL: %.2f\n", current->satisfaction_level);
+            printf("NP: %d\n", current->number_project);
+            printf("AVGH: %d\n", current->average_monthly_hours);
+            printf("TSCY: %d\n", current->time_spend_company_in_years);
+            printf("WA: %d\n", current->Work_accident);
+            printf("PLY: %d\n", current->promotion_last_5years);
+            printf("Job: %s\n", current->JobTitle);
+            printf("Base: %.2f\n", current->BasePay);
+            printf("OT: %.2f\n", current->OvertimePay);
+            printf("Bene: %.2f\n", current->Benefit);
+            printf("Status: %s\n", current->Status);
             send(newSocket, current, sizeof(struct employee), 0); //send all info back to client
         }
         else
