@@ -67,6 +67,7 @@ void * findSatisfaction(void *f)
         linePos++;
         pos = 1;
 
+        memset(numOfProjects, 0, sizeof(numOfProjects)); 
         numOfProjects[0] = '0';
         while(line[linePos] != '\t') // gather number of projects
         {
@@ -74,6 +75,7 @@ void * findSatisfaction(void *f)
             pos++;
             linePos++;
         }
+        printf("array:%s, int:%d", numOfProjects, atoi(numOfProjects));
         find->number_project = atoi(numOfProjects); //set employee package num of projects to gathered array
         linePos++;
         pos = 1;
@@ -263,10 +265,13 @@ int checkDetails(struct employee *find)
         linePos++; //move past tab
         pos = 0;
 
+
         if(find->ID != atoi(id)) //if the ID is not the same, skip to next line
         {
             continue;
         }
+
+        printf("id:%d, looking:%d\n", atoi(id), find->ID);
 
 
         memset(jobCheck, 0, 100); //clear array to prevent bugs
@@ -388,8 +393,11 @@ void server()
     
     printf("Connection Accepted from %s:%d\n\n", inet_ntoa(newAddr.sin_addr), ntohs(newAddr.sin_port)); //print out client's connection info
 
+    int m = 0;
+
     while(1)
     {
+        m = 0;
         pos = 0; //set pointer ints and bool to 0
         linePos = 0;
         foundMatch = 0;
@@ -416,12 +424,14 @@ void server()
 
         while(fgets(line, 100, fp) != NULL) //read in line from file until EOF
         {
+            memset(id, 0, sizeof(id));
             while(line[linePos] != '\t') //read until first seperation
             {
                 id[pos] = line[linePos]; //copy chars over one by one
                 pos++;
                 linePos++;
             }
+
             current->ID = atoi(id); //convert to int and store in struct
             pos = 0;
             linePos++; //move pointer past tab
@@ -432,9 +442,11 @@ void server()
                 pos++;
                 linePos++;
             }
+            
 
             if(strcmp(current->EmployeeName, name) == 0) // check to see if the name matches to the client provided name
             {
+
                 
                 if(checkDetails(current) != 0) //check to see if status and job title are the same as client given info in case name is the same as anothers
                 {

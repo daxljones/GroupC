@@ -46,6 +46,78 @@ void Manager ()
 	}
 
 	int i = 0;
+
+	strcpy(emp->EmployeeName, "NATHANIEL FORD");
+	strcpy(emp->JobTitle, "GENERAL MANAGER-METROPOLITAN TRANSIT AUTHORITY");
+	strcpy(emp->Status, "PT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "GARY JIMENEZ");
+	strcpy(emp->JobTitle, "CAPTAIN III (POLICE DEPARTMENT)");
+	strcpy(emp->Status, "FT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "ALBERT PARDINI");
+	strcpy(emp->JobTitle, "CAPTAIN III (POLICE DEPARTMENT)");
+	strcpy(emp->Status, "FT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "CHRISTOPHER CHONG");
+	strcpy(emp->JobTitle, "WIRE ROPE CABLE MAINTENANCE MECHANIC");
+	strcpy(emp->Status, "FT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "PATRICK GARDNER");
+	strcpy(emp->JobTitle, "DEPUTY CHIEF OF DEPARTMENT,(FIRE DEPARTMENT)");
+	strcpy(emp->Status, "FT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "DAVID SULLIVAN");
+	strcpy(emp->JobTitle, "ASSISTANT DEPUTY CHIEF II");
+	strcpy(emp->Status, "PT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "ALSON LEE");
+	strcpy(emp->JobTitle, "BATTALION CHIEF, (FIRE DEPARTMENT)");
+	strcpy(emp->Status, "PT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "DAVID KUSHNER");
+	strcpy(emp->JobTitle, "DEPUTY DIRECTOR OF INVESTMENTS");
+	strcpy(emp->Status, "PT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "MICHAEL MORRIS");
+	strcpy(emp->JobTitle, "BATTALION CHIEF, (FIRE DEPARTMENT)");
+	strcpy(emp->Status, "PT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "JOANNE HAYES-WHITE");
+	strcpy(emp->JobTitle, "CHIEF OF DEPARTMENT, (FIRE DEPARTMENT)");
+	strcpy(emp->Status, "PT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "ARTHUR KENNEY");
+	strcpy(emp->JobTitle, "ASSISTANT CHIEF OF DEPARTMENT, (FIRE DEPARTMENT)");
+	strcpy(emp->Status, "PT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "PATRICIA JACKSON");
+	strcpy(emp->JobTitle, "CAPTAIN III (POLICE DEPARTMENT)");
+	strcpy(emp->Status, "FT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	strcpy(emp->EmployeeName, "EDWARD HARRINGTON");
+	strcpy(emp->JobTitle, "EXECUTIVE CONTRACT EMPLOYEE");
+	strcpy(emp->Status, "FT");
+	write(commpipe[1], emp, sizeof(*emp));
+
+	// strcpy(emp->EmployeeName, "NATHANIEL FORD");
+	// strcpy(emp->JobTitle, "GENERAL MANAGER-METROPOLITAN TRANSIT AUTHORITY");
+	// strcpy(emp->Status, "PT");
+	// write(commpipe[1], emp, sizeof(*emp));
+
+
 	//loop that allows the user to input employees to be searched 		
 	while(1)
 	{
@@ -144,6 +216,7 @@ void assistant(int *commpipe, char *ip){
 		{
 			send(clientSocket, emp, sizeof(struct employee), 0);
 			close(clientSocket);
+			remove("./history");
 			exit(0);
 		}
 
@@ -223,7 +296,7 @@ void assistant(int *commpipe, char *ip){
 
 			//if the information was found in the server, update history file
 			if(!found2 && !found){
-				fprintf(fp, "%s was not found\n",emp->EmployeeName);
+				fprintf(fp, "Employee was not found\n");
 			}else{
 				//rewrite history file
 				fptr = fopen(fileName, "rb");
@@ -231,6 +304,7 @@ void assistant(int *commpipe, char *ip){
 				for(int i = 0; i < 10; i++){
 					if(rewrite % 10 == i){
 						fwrite(emp, sizeof(struct employee), 1, temp);
+						fread(search, sizeof(struct employee), 1, fptr);
 					}
 					else{
 						fread(search, sizeof(struct employee), 1, fptr);
