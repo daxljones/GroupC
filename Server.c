@@ -75,7 +75,6 @@ void * findSatisfaction(void *f)
             pos++;
             linePos++;
         }
-        printf("array:%s, int:%d", numOfProjects, atoi(numOfProjects));
         find->number_project = atoi(numOfProjects); //set employee package num of projects to gathered array
         linePos++;
         pos = 1;
@@ -270,8 +269,6 @@ int checkDetails(struct employee *find)
         {
             continue;
         }
-
-        printf("id:%d, looking:%d\n", atoi(id), find->ID);
 
 
         memset(jobCheck, 0, 100); //clear array to prevent bugs
@@ -469,19 +466,6 @@ void server()
 
         if(foundMatch) //check if the match was found
         {
-            printf("ID: %d\n", current->ID);
-            printf("Name: %s\n", current->EmployeeName);
-            printf("SL: %.2f\n", current->satisfaction_level);
-            printf("NP: %d\n", current->number_project);
-            printf("AVGH: %d\n", current->average_monthly_hours);
-            printf("TSCY: %d\n", current->time_spend_company_in_years);
-            printf("WA: %d\n", current->Work_accident);
-            printf("PLY: %d\n", current->promotion_last_5years);
-            printf("Job: %s\n", current->JobTitle);
-            printf("Base: %.2f\n", current->BasePay);
-            printf("OT: %.2f\n", current->OvertimePay);
-            printf("Bene: %.2f\n", current->Benefit);
-            printf("Status: %s\n", current->Status);
             send(newSocket, current, sizeof(struct employee), 0); //send all info back to client
         }
         else
